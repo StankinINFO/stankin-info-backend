@@ -7,6 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.visapps.universityschedule.entity.Teacher;
+import org.visapps.universityschedule.entity.Timetable;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.BufferedInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ScheduleService {
@@ -19,12 +27,10 @@ public class ScheduleService {
     }
 
     public void saveSchedule(MultipartFile file) throws Exception {
-        String xml = new String(file.getBytes(), "windows-1251");
-        JSONObject jsonObject = XML.toJSONObject(xml);
-        String json = jsonObject.toString();
-        Document doc = Document.parse(json);
-        doc.put("_id","2019-01");
-        mongoTemplate.insert(doc, "timetable");
+        JAXBContext jaxbContext = JAXBContext.newInstance(Timetable.class);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        Timetable timetable = (Timetable) unmarshaller.unmarshal(new BufferedInputStream(file.getInputStream()));
+        mongoTemplate.insert(timetable.getTeachers(), "teachers");
     }
 
 }
