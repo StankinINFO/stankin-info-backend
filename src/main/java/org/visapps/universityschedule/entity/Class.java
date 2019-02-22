@@ -11,32 +11,30 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.List;
 
-@Document(collection = "teachers")
+@Document(collection = "classes")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Getter
 @Setter
-public class Teacher {
+public class Class {
 
     @Id
-    private String id;
-
-    private Person person;
-    private String comment;
-    @XmlElement(name = "class_id")
-    private Integer classId;
-    @XmlElement(name = "subject_id")
-    private Integer subjectId;
-    @XmlElement(name = "room_id")
-    private Integer roomId;
-    @XmlElement(name = "chair_id")
-    private Integer chairId;
-    @XmlElement(name = "method_days")
-    private Integer methodDays;
-    @XmlElement(name = "max_windows")
-    private Integer maxWindows;
+    private Integer id;
+    @XmlElement(name = "external_id")
+    private Integer externalId;
+    private String name;
+    private Integer session;
+    private Integer student;
+    @XmlElement(name = "min_lessons_per_day")
+    private Integer minLessonsPerDay;
+    @XmlElement(name = "max_lessons_per_day")
+    private Integer maxLessonsPerDay;
+    @XmlElement(name = "max_load_per_week")
+    private Integer maxLoadPerWeek;
     @XmlElementWrapper(name="work_hours")
     @XmlElement(name = "week")
     private List<Week> workHours;
-    private String status;
+    @XmlElement(name = "speciality_id")
+    private Integer specialityId;
+    private Integer semester;
 
 }
