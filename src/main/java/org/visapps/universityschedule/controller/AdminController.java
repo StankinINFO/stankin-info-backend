@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.visapps.universityschedule.service.AdminService;
 
 @RestController
-@RequestMapping("api/v1/admin")
+@RequestMapping("admin")
 public class AdminController {
 
     private final AdminService adminService;

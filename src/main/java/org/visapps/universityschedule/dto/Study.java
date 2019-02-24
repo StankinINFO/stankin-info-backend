@@ -11,7 +11,6 @@ public class Study {
     private Integer hour;
     private String time;
     private String room;
-    private Integer building;
     private String subject;
     @JsonProperty("study_type")
     private String studyType;
