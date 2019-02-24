@@ -3,23 +3,23 @@ package org.visapps.universityschedule.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.visapps.universityschedule.service.ScheduleService;
+import org.visapps.universityschedule.service.AdminService;
 
 @RestController
 @RequestMapping("api/v1/admin")
 public class AdminController {
 
-    private final ScheduleService scheduleService;
+    private final AdminService adminService;
 
     @Autowired
-    public AdminController(ScheduleService scheduleService) {
-        this.scheduleService = scheduleService;
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
     }
 
     @PostMapping("/upload")
     public String uploadSchedule(@RequestParam("schedule") MultipartFile file) {
         try{
-            scheduleService.saveSchedule(file);
+            adminService.saveSchedule(file);
             return "ok";
         }
         catch(Exception e){
