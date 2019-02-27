@@ -12,10 +12,7 @@ import org.visapps.universityschedule.util.MongoUtil;
 import org.visapps.universityschedule.util.TimeUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -33,13 +30,14 @@ public class ScheduleService {
     public List<Study> getStudies(Integer classId, Integer subclass, Date date) throws Exception {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date start = format.parse("2019-02-04");
-        MongoCollection scheds = mongoTemplate.getCollection("scheds");
+        Date current = TimeUtil.getDateWithDefaultTime(date);
+        MongoCollection schedules = mongoTemplate.getCollection("scheds");
         Integer dayOfWeek = TimeUtil.getDayOfWeek(date);
         String week = TimeUtil.getWeekOfPeriod(start, date);
-        List<Document> pipeline = MongoUtil.getClassDaySchedulePipeline(classId, subclass, date, dayOfWeek, week);
+        List<Document> pipeline = MongoUtil.getClassDaySchedulePipeline(classId, subclass, current, dayOfWeek, week);
         List<Study> results = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
-        AggregateIterable aggregate = scheds.aggregate(pipeline);
+        AggregateIterable aggregate = schedules.aggregate(pipeline);
         for(Object object : aggregate){
             Document document = (Document) object;
             results.add(mapper.readValue(document.toJson(), Study.class));
