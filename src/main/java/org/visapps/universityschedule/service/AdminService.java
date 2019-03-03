@@ -24,7 +24,7 @@ public class AdminService {
 
     private String[] collections =
             {"areas", "chairs","classes","holidays","loads","plans","rooms",
-                    "scheds","specialities", "study_types","subjects","teachers", "times"};
+                    "scheds","specialities","study_types","subjects","teachers","terms","times"};
 
     private final MongoTemplate mongoTemplate;
 
@@ -50,6 +50,7 @@ public class AdminService {
         holidays.forEach(holiday->holiday.setId(holidayId.getAndIncrement()));
         mongoTemplate.insert(times, "times");
         mongoTemplate.insert(holidays, "holidays");
+        mongoTemplate.insert(timetable.getTerm().toList(), "terms");
         mongoTemplate.insert(timetable.getAreas(), "areas");
         mongoTemplate.insert(timetable.getChairs(), "chairs");
         mongoTemplate.insert(timetable.getClasses(), "classes");

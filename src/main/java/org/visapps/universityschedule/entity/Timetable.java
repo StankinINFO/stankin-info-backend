@@ -17,7 +17,7 @@ public class Timetable {
     private List<Area> areas;
 
     @XmlElement(name = "term")
-    private Term term;
+    private Terms term;
 
     @XmlElementWrapper(name="times")
     @XmlElement(name="time")

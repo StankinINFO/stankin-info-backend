@@ -12,8 +12,11 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 @Configuration
 public class MongoConfiguration extends AbstractMongoConfiguration {
 
-    @Value( "${schedule.database.connection}" )
-    private String connection;
+    @Value( "${schedule.database.url}" )
+    private String url;
+
+    @Value( "${schedule.database.name}" )
+    private String name;
 
     @Bean
     MongoTransactionManager transactionManager(MongoDbFactory dbFactory) {
@@ -22,12 +25,12 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
 
     @Override
     protected String getDatabaseName() {
-        return "schedule";
+        return name;
     }
 
     @Override
     public MongoClient mongoClient() {
-        MongoClientURI uri = new MongoClientURI(connection);
+        MongoClientURI uri = new MongoClientURI(url);
         return new MongoClient(uri);
     }
 }

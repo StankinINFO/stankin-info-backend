@@ -5,10 +5,11 @@ import org.bson.Document;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MongoUtil {
 
-    public static List<Document> getClassDaySchedulePipeline(Integer classId, Integer subclass, Date date, Integer dayOfWeek, String week) {
+    public static List<Document> classDaySchedulePipeline(Integer classId, Integer subclass, Date date, Integer dayOfWeek, String week) {
         return Arrays.asList(new Document("$project",
                         new Document("day", 1)
                                 .append("_id", 0)
@@ -104,5 +105,24 @@ public class MongoUtil {
                                                                 new Document("$concat", Arrays.asList("$teacher.person.surname", " ", "$teacher.person.firstName", ".", "$teacher.person.secondName", ".")))))),
                 new Document("$sort",
                         new Document("hour", 1L)));
+    }
+
+    public static List<Document> classesPipeline(String query) {
+        return Arrays.asList(new Document("$match",
+                        new Document("name", Pattern.compile(query))),
+                new Document("$lookup",
+                        new Document("from", "specialities")
+                                .append("localField", "specialityId")
+                                .append("foreignField", "_id")
+                                .append("as", "speciality")),
+                new Document("$unwind",
+                        new Document("path", "$speciality")),
+                new Document("$project",
+                        new Document("_id", 0L)
+                                .append("id", "$_id")
+                                .append("name", "$name")
+                                .append("students", "$student")
+                                .append("speciality", "$speciality.fullName")
+                                .append("semester", "$semester")));
     }
 }
