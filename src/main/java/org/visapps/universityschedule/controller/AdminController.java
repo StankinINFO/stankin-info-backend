@@ -9,6 +9,7 @@ import org.visapps.universityschedule.service.AdminService;
 
 @RestController
 @RequestMapping("admin")
+@CrossOrigin
 public class AdminController {
 
     private final AdminService adminService;

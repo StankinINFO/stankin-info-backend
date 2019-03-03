@@ -4,21 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.visapps.universityschedule.dto.Class;
-import org.visapps.universityschedule.dto.Study;
 import org.visapps.universityschedule.util.MongoUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 public class UniversityService {
 
-    private Logger logger = Logger.getLogger(ScheduleService.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(UniversityService.class);
 
     private final MongoTemplate mongoTemplate;
 

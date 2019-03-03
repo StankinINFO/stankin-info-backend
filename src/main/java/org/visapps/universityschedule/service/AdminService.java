@@ -1,6 +1,8 @@
 package org.visapps.universityschedule.service;
 
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
@@ -9,18 +11,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.visapps.universityschedule.entity.Holiday;
 import org.visapps.universityschedule.entity.Time;
 import org.visapps.universityschedule.entity.Timetable;
+import org.visapps.universityschedule.entity.User;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.BufferedInputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class AdminService {
 
-    private Logger logger = Logger.getLogger(AdminService.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
     private String[] collections =
             {"areas", "chairs","classes","holidays","loads","plans","rooms",
@@ -38,7 +43,6 @@ public class AdminService {
         JAXBContext jaxbContext = JAXBContext.newInstance(Timetable.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         Timetable timetable = (Timetable) unmarshaller.unmarshal(new BufferedInputStream(file.getInputStream()));
-        logger.info(String.valueOf(timetable.getTeachers().size()));
         for(String collection : collections) {
             mongoTemplate.getCollection(collection).deleteMany(new Document());
         }
