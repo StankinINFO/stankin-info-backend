@@ -20,6 +20,7 @@ public class AdminController {
     }
 
     @PostMapping("/upload")
+    @CrossOrigin
     public ResponseEntity<Result> uploadSchedule(@RequestParam("schedule") MultipartFile file) {
         try{
             adminService.saveSchedule(file);
