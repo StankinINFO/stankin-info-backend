@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.visapps.universityschedule.security.AuthEntryPoint;
 import org.visapps.universityschedule.security.AuthProvider;
 
@@ -33,8 +34,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
                 .requiresSecure()
                 .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .cors()
                 .and()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/admin/**")
                 .hasRole("ADMIN")
