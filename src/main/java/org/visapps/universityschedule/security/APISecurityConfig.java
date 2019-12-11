@@ -59,8 +59,8 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
                     {
                         throw new BadCredentialsException("The API key was not found or not the expected value.");
                     }
+                    else authentication.setAuthenticated(true);
                 }
-                authentication.setAuthenticated(true);
                 return authentication;
             }
         });
