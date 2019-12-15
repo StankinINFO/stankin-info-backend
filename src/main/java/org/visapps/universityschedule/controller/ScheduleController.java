@@ -36,4 +36,18 @@ public class ScheduleController {
             return ResponseEntity.ok(Response.Error());
         }
     }
+
+    @GetMapping("/class/semestr")
+    @CrossOrigin
+    public ResponseEntity<Response> classScheduleSemestr(@RequestParam(value="classId") Integer classId,
+                                                  @RequestParam(value="subclass") Integer subclass) {
+        try{
+            List<Study> results = scheduleService.getStudies(classId, subclass);
+            return ResponseEntity.ok(Response.Success(results));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok(Response.Error());
+        }
+    }
 }

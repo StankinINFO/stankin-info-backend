@@ -125,4 +125,82 @@ public class MongoUtil {
                                 .append("speciality", "$speciality.fullName")
                                 .append("semester", "$semester")));
     }
+
+    public static List<Document> classSchedulePipeline(Integer classId, Integer subclass) {
+        return Arrays.asList(new Document("$project",
+                        new Document("day", 1)
+                                .append("_id", 0)),
+                new Document("$lookup",
+                        new Document("from", "loads")
+                                .append("localField", "loadId")
+                                .append("foreignField", "_id")
+                                .append("as", "load")),
+                new Document("$unwind",
+                        new Document("path", "$load")),
+                new Document("$addFields",
+                        new Document("subclass",
+                                new Document("$cond", Arrays.asList(new Document("$gt", Arrays.asList(new Document("$size", "$load.groups"), 1)), "$group", -1)))),
+                new Document("$match",
+                        new Document("load.klassIdList", classId)
+                                .append("$or", Arrays.asList(new Document("load.groups",
+                                                new Document("$size", 1)),
+                                        new Document("group", subclass)))),
+                new Document("$unwind",
+                        new Document("path", "$load.groups")
+                                .append("includeArrayIndex", "groupid")),
+                new Document("$match",
+                        new Document("$expr",
+                                new Document("$eq", Arrays.asList("$group", "$groupid")))),
+                new Document("$lookup",
+                        new Document("from", "times")
+                                .append("localField", "hour")
+                                .append("foreignField", "_id")
+                                .append("as", "time")),
+                new Document("$unwind",
+                        new Document("path", "$time")),
+                new Document("$lookup",
+                        new Document("from", "rooms")
+                                .append("localField", "roomId")
+                                .append("foreignField", "_id")
+                                .append("as", "room")),
+                new Document("$unwind",
+                        new Document("path", "$room")),
+                new Document("$lookup",
+                        new Document("from", "teachers")
+                                .append("localField", "load.groups.teacherId")
+                                .append("foreignField", "person._id")
+                                .append("as", "teacher")),
+                new Document("$unwind",
+                        new Document("path", "$teacher")),
+                new Document("$lookup",
+                        new Document("from", "subjects")
+                                .append("localField", "load.groups.subjectId")
+                                .append("foreignField", "_id")
+                                .append("as", "subject")),
+                new Document("$unwind",
+                        new Document("path", "$subject")),
+                new Document("$lookup",
+                        new Document("from", "study_types")
+                                .append("localField", "load.groups.studyTypeId")
+                                .append("foreignField", "_id")
+                                .append("as", "study_type")),
+                new Document("$unwind",
+                        new Document("path", "$study_type")),
+                new Document("$project",
+                        new Document("hour", 1)
+                                .append("time", "$time.value")
+                                .append("room", "$room.name")
+                                .append("subject", "$subject.fullName")
+                                .append("study_type", "$study_type.fullName")
+                                .append("subclass", "$subclass")
+                                .append("teacher",
+                                        new Document("$cond",
+                                                new Document("if",
+                                                        new Document("$eq", Arrays.asList("$teacher.person.surname", "=")))
+                                                        .append("then", "")
+                                                        .append("else",
+                                                                new Document("$concat", Arrays.asList("$teacher.person.surname", " ", "$teacher.person.firstName", ".", "$teacher.person.secondName", ".")))))),
+                new Document("$sort",
+                        new Document("hour", 1L)));
+    }
 }

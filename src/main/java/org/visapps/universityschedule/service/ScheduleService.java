@@ -49,4 +49,17 @@ public class ScheduleService {
         return results;
     }
 
+    public List<Study> getStudies(Integer classId, Integer subclass) throws Exception {
+        MongoCollection schedules = mongoTemplate.getCollection("scheds");
+        List<Document> pipeline = MongoUtil.classSchedulePipeline(classId, subclass);
+        List<Study> results = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        AggregateIterable aggregate = schedules.aggregate(pipeline);
+        for(Object object : aggregate){
+            Document document = (Document) object;
+            results.add(mapper.readValue(document.toJson(), Study.class));
+        }
+        return results;
+    }
+
 }
