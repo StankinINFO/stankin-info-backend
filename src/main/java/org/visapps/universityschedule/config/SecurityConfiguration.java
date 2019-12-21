@@ -32,24 +32,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http .requiresChannel()
-                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
-                .requiresSecure()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .cors()
-                .and()
-                .csrf().disable()
+        http .antMatcher("/admin/**")
                 .authorizeRequests()
-                .antMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .antMatchers("/**")
-                .permitAll()
+                .antMatchers("/admin/**").access("hasRole('ADMIN')")
                 .and()
                 .httpBasic()
                 .authenticationEntryPoint(authEntryPoint);
-    }
+
+        }
 
 }

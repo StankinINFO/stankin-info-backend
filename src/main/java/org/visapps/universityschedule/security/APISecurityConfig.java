@@ -33,10 +33,10 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final MongoTemplate mongoTemplate;
 
-    @Value("http.auth-token-header-name")
+    @Value("KEY")
     private String principalRequestHeader;
 
-    @Value("http.auth-token")
+    @Value("VALUE")
     private String principalRequestValue;
 
     @Autowired
@@ -47,22 +47,18 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         APIKeyAuthFilter filter = new APIKeyAuthFilter(principalRequestHeader);
-        filter.setAuthenticationManager(new AuthenticationManager() {
-
-            @Override
-            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-                String login = authentication.getName();
-                User user = mongoTemplate.findOne(query(where("login").is(login)), User.class);
-                if(user!= null){
-                    String principal = user.getKey();
-                    if (!principalRequestValue.equals(principal))
-                    {
-                        throw new BadCredentialsException("The API key was not found or not the expected value.");
-                    }
-                    else authentication.setAuthenticated(true);
+        filter.setAuthenticationManager(authentication -> {
+            String key = authentication.getName();
+            User user = mongoTemplate.findOne(query(where("key").is(key)), User.class);
+            if(user!= null){
+                String principal = user.getKey();
+                if (!principalRequestValue.equals(principal))
+                {
+                    throw new BadCredentialsException("The API key was not found or not the expected value.");
                 }
-                return authentication;
+                else authentication.setAuthenticated(true);
             }
+            return authentication;
         });
         httpSecurity.
                 antMatcher("/api/**").
