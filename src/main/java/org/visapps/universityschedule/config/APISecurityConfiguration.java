@@ -1,4 +1,4 @@
-package org.visapps.universityschedule.security;
+package org.visapps.universityschedule.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.visapps.universityschedule.entity.User;
+import org.visapps.universityschedule.security.APIKeyAuthFilter;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -29,7 +30,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Configuration
 @EnableWebSecurity
 @Order(2)
-public class APISecurityConfig extends WebSecurityConfigurerAdapter {
+public class APISecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final MongoTemplate mongoTemplate;
 
@@ -40,7 +41,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
     private String principalRequestValue;
 
     @Autowired
-    public APISecurityConfig(MongoTemplate mongoTemplate) {
+    public APISecurityConfiguration(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
